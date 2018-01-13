@@ -1,26 +1,33 @@
-
 pipeline {
-
   agent {
     label 'master'
   }
-
   stages {
     stage('Tests') {
-      steps {
-        sh './gradlew clean test'
+      parallel {
+        stage('Tests') {
+          steps {
+            sh './gradlew clean test'
+          }
+        }
+        stage('ZiStage') {
+          steps {
+            input(message: 'r', id: 'f', ok: 'd', submitter: 'awr')
+          }
+        }
       }
     }
   }
-
   post {
     always {
-      junit testResults: 'build/test-results/*.xml'
-
+      junit 'build/test-results/*.xml'
       script {
         def tr = junitTestResults()
         println tr
       }
+      
+      
     }
+    
   }
 }
