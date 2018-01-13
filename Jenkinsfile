@@ -14,11 +14,13 @@ pipeline {
   }
 
   post {
-    junit testResults: 'build/test-results/*.xml'
+    always {
+      junit testResults: 'build/test-results/*.xml'
 
-    script {
-      def tr = junitTestResults()
-      println tr
+      script {
+        def tr = junitTestResults()
+        println tr
+      }
     }
   }
 }
